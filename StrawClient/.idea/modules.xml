@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/StrawClient.iml" filepath="$PROJECT_DIR$/StrawClient.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../StrawServer/StrawServer.iml" filepath="$PROJECT_DIR$/../StrawServer/StrawServer.iml" />
     </modules>
   </component>
 </project>
