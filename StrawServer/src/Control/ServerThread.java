@@ -9,8 +9,8 @@ import java.net.Socket;
 public class ServerThread extends Thread{
     // Socket property
     private Socket sock;
-    String fileName = "merry";
-    String filePath = "Database/OGaudios/"+fileName+".wav";
+    String fileName = "audio1";
+    String filePath = "Database/OGaudios/"+fileName+".mp3";
     //init thread & socket
     public ServerThread(Socket sock){
         this.sock = sock;
@@ -34,7 +34,7 @@ public class ServerThread extends Thread{
 
             // Set Audio Control
             ac = new AudioControl(out,in,pw,br);
-            ac.setAudioEncoding(filePath,fileName);
+            //ac.setAudioEncoding(filePath,fileName);
             ac.sendAudioFile(filePath);
 
             pw.close();

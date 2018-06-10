@@ -14,7 +14,7 @@ public class AudioEncoder {
 
     public AudioEncoder(File inFile, String fileName){
         this.inFile = inFile;
-        this.outFile = new File("Database/2000Audios/"+fileName+".wav");
+        this.outFile = new File("Database/2000Audios/"+fileName+".mp3");
     }
 
     public void changeSampleRate()throws InterruptedException, UnsupportedAudioFileException, IOException {
