@@ -33,16 +33,11 @@ public class AudioDownloader {
             int count;
             int i=0;
 
-            count = in.read(buffer);
-            while(count >0){
-                fos.write(buffer);
+
+            do{
                 count = in.read(buffer);
-                i++;
-                if(i == 200){
-                    i=0;
-                    Thread.sleep(5000);
-                }
-            }
+                fos.write(buffer);
+            }while(count >0);
 
             System.out.println("done");
         } catch (FileNotFoundException e) {
