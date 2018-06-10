@@ -37,12 +37,19 @@ public class AudioDownloader {
             while(count >0){
                 fos.write(buffer);
                 count = in.read(buffer);
+                i++;
+                if(i == 200){
+                    i=0;
+                    Thread.sleep(5000);
+                }
             }
 
             System.out.println("done");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
