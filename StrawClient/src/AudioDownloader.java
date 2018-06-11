@@ -21,7 +21,7 @@ public class AudioDownloader {
         try{
             int fileIdx = 0;
             // set file & file stream
-            File file = new File(filePath+fileName+ (++fileIdx)+".mp3");
+            File file = new File(filePath+fileName+".mp3");
             FileOutputStream fos = new FileOutputStream(file);
 
             // set buffer
@@ -30,22 +30,17 @@ public class AudioDownloader {
             long fileSize = file.length();
             int count;
             int i=0;
-
             do{
                 count = in.read(buffer);
-                if(count == -1){
-                    break;
-                }
                 fos.write(buffer);
                 i++;
-                if(i==50) {
-                    fos.flush();
-                    fos.close();
-                    File nFile = new File(filePath + fileName + (++fileIdx) + ".mp3");
-                    fos = new FileOutputStream(nFile);
+                if(i==10){
                     i=0;
+                    Thread.sleep(800);
                 }
-            }while(true);
+            }while(count>0);
+
+            
             in.close();
             fos.flush();
             fos.close();
@@ -54,6 +49,8 @@ public class AudioDownloader {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

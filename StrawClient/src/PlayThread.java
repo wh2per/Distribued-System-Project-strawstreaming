@@ -16,14 +16,13 @@ public class PlayThread extends Thread {
             f.setLocationRelativeTo(null);
             f.setSize(200,200);
             f.setVisible(true);
+            //Thread.sleep(10);
+            File file =new File("./Downloads/download"+".mp3");
+            FileInputStream fis = new FileInputStream(file);
+            BufferedInputStream bis = new BufferedInputStream(fis);
+            Player player = new Player(bis);
+            player.play();
 
-            for(int i=1; i<29; i++) {
-                File file =new File("./Downloads/download" + i + ".mp3");
-                FileInputStream fis = new FileInputStream(file);
-                BufferedInputStream bis = new BufferedInputStream(fis);
-                Player player = new Player(bis);
-                player.play();
-            }
 
         }catch (Exception e){
             System.out.println(e);
