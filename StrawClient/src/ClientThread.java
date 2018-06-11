@@ -1,8 +1,4 @@
-/**
- * Created by jakeu on 2018. 6. 11..
- */
 import java.io.*;
-import java.net.InetAddress;
 import java.net.Socket;
 
 public class ClientThread extends Thread {
@@ -10,6 +6,7 @@ public class ClientThread extends Thread {
 
     public void run(){
         try{
+
             //socket
             sock = new Socket("127.0.0.1",9999);
             // In & out streams.
@@ -25,6 +22,7 @@ public class ClientThread extends Thread {
             pw.close();
             br.close();
             sock.close();
+
         } catch (Exception ex) {
             System.out.println(ex);
         }
