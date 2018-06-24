@@ -1,47 +1,61 @@
 package Control;
-/**
- * Created by jakeu on 2018. 6. 10..
- */
-import java.io.*;
-import java.net.InetAddress;
-import java.net.Socket;
 
-public class ServerThread extends Thread{
-    // Socket property
-    private Socket sock;
-    String fileName = "audio1";
-    String filePath = "Database/OGaudios/"+fileName+".mp3";
-    //init thread & socket
-    public ServerThread(Socket sock){
-        this.sock = sock;
+import java.io.*;
+
+public class Control {
+    private OutputStream out;
+    private InputStream in;
+    private PrintWriter pw;
+    private BufferedReader br;
+
+    private int startSQN;
+    private int endSQN;
+
+    public Control(OutputStream out, InputStream in, PrintWriter pw, BufferedReader br) {
+        this.in = in;
+        this.out = out;
+        this.pw = pw;
+        this.br = br;
     }
 
-    public void run(){
-        try{
-            // Socket connection.
-            InetAddress inetAddr = sock.getInetAddress();
-            System.out.println("NEW CLIENT : " + inetAddr.getHostAddress());
-            // In & out streams.
-            OutputStream out = sock.getOutputStream();
-            InputStream in = sock.getInputStream();
-            // PrintWriter & bufferReader.
-            PrintWriter pw = new PrintWriter(new OutputStreamWriter(out));
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            // Properties.
+    public int ServerToSlave(String filename, String filePath, int id){
+        try {
+            String line = null;
             String msg = null;
-            // Control objects
-            AudioControl ac;
 
-            // Set Audio Control
-            ac = new AudioControl(out,in,pw,br);
-            //ac.setAudioEncoding(filePath,fileName);
-            ac.sendAudioFile(filePath);
+            pw.println("1");            // 슬레이브로 다운로드 요청 전송
+            pw.flush();
 
-            pw.close();
-            br.close();
-            sock.close();
-        } catch (Exception ex) {
-            System.out.println(ex);
+            line = br.readLine();           // 슬레이브로 부터 메세지 받기
+            if(line.equals("ACK1")){         // 슬레이브로 부터 ACK 옴
+                pw.println(filename);       // 슬레이브로 파일명 전송
+                pw.flush();
+
+                line = br.readLine();       // 슬레이브로 부터 메세지 받기
+                if(line.equals("ACK2")) {     // 슬레이브로 부터 ACK 옴
+                    AudioControl ad = new AudioControl(out,in,pw,br);
+                    msg = ad.getSQN(filePath,id);
+                    System.out.println(msg);
+                    pw.println(msg);              // 슬레이브로 start, end 시퀀스 넘버를 전송  ex) 0,10
+                    pw.flush();
+
+                    line = br.readLine();
+                    if(line.equals("ACK3")){
+                        ad.sendAudioFile(filePath);      //슬레이브로 음원을 전송
+
+                        pw.println("2");        // 슬레이브로 다운로드 종료 전송
+                        pw.flush();
+                    }
+                }
+            }else{
+                System.out.println("다운로드 요청부터 전송하세요 ! ");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+
+        return 0;
     }
 }
+
