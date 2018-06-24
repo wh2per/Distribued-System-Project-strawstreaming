@@ -34,8 +34,8 @@ public class ServerThread extends Thread{
 
             // Set Audio Control
             ac = new AudioControl(out,in,pw,br);
-            //ac.setAudioEncoding(filePath,fileName);
-            ac.sendAudioFile(filePath);
+            ac.setAudioEncoding(filePath,fileName);
+            //ac.sendAudioFile(filePath);
 
             pw.close();
             br.close();

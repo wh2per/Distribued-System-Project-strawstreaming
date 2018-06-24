@@ -1,8 +1,14 @@
 package Utils;
 
-import javax.sound.sampled.*;
 import java.io.File;
-import java.io.IOException;
+import com.xuggle.mediatool.IMediaReader;
+import com.xuggle.mediatool.IMediaWriter;
+import com.xuggle.mediatool.ToolFactory;
+import org.slf4j.LoggerFactory;
+import org.slf4j.impl.StaticLoggerBinder;
+import com.xuggle.mediatool.MediaListenerAdapter;
+import com.xuggle.mediatool.event.IAddStreamEvent;
+import com.xuggle.xuggler.IStreamCoder;
 
 /**
  * Created by jakeu on 2018. 6. 10..
@@ -12,37 +18,37 @@ public class AudioEncoder {
     private File inFile;
     private File outFile;
 
-    public AudioEncoder(File inFile, String fileName){
-        this.inFile = inFile;
+    public AudioEncoder(String filePath, String fileName){
+        this.inFile = new File(filePath);
         this.outFile = new File("Database/2000Audios/"+fileName+".mp3");
     }
 
-    public void changeSampleRate()throws InterruptedException, UnsupportedAudioFileException, IOException {
-        AudioInputStream ais;
-        AudioInputStream eightKhzInputStream = null;
-        ais = AudioSystem.getAudioInputStream(inFile);
-        AudioFormat sourceFormat = ais.getFormat();
+    public void bitRateConvert(int kbps){
+        // create a media reader
+        IMediaReader mediaReader = ToolFactory.makeReader(inFile.getPath());
 
-        if (true) {
-            AudioFileFormat sourceFileFormat = AudioSystem.getAudioFileFormat(inFile);
-            AudioFileFormat.Type targetFileType = sourceFileFormat.getType();
+        // create a media writer
+        IMediaWriter mediaWriter = ToolFactory.makeWriter(outFile.getPath(), mediaReader);
 
-            AudioFormat targetFormat = new AudioFormat(
-                    sourceFormat.getEncoding(),
-                    2000f,
-                    sourceFormat.getSampleSizeInBits(),
-                    sourceFormat.getChannels(),
-                    sourceFormat.getFrameSize(),
-                    2000f,
-                    sourceFormat.isBigEndian());
-            if (!AudioSystem.isFileTypeSupported(targetFileType) || ! AudioSystem.isConversionSupported(targetFormat, sourceFormat)) {
-                throw new IllegalStateException("Conversion not supported!");
+        // add a writer to the reader, to create the output file
+        mediaReader.addListener(mediaWriter);
+
+        // add a IMediaListner to the writer to change bit rate
+        mediaWriter.addListener(new MediaListenerAdapter() {
+            @Override
+            public void onAddStream(IAddStreamEvent event) {
+                IStreamCoder streamCoder = event.getSource().getContainer().getStream(event.getStreamIndex()).getStreamCoder();
+                streamCoder.setFlag(IStreamCoder.Flags.FLAG_QSCALE, false);
+                streamCoder.setBitRate(kbps*1000);
+                streamCoder.setBitRateTolerance(0);
+
             }
-            eightKhzInputStream = AudioSystem.getAudioInputStream(targetFormat, ais);
-            int nWrittenBytes = 0;
+        });
 
-            nWrittenBytes = AudioSystem.write(eightKhzInputStream, targetFileType, outFile);
-            System.out.println("nWrittenBytes: " + nWrittenBytes);
-        }
+        // read and decode packets from the source file and
+        // and dispatch decoded audio and video to the writer
+        while (mediaReader.readPacket() == null);
+
+        System.out.println("Encoding done with "+kbps+" kbps");
     }
 }

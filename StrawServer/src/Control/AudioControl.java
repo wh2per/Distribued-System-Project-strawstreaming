@@ -3,13 +3,7 @@ package Control;
  * Created by jakeu on 2018. 6. 10..
  */
 import Utils.AudioEncoder;
-
-import javax.imageio.ImageIO;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import java.awt.image.BufferedImage;
 import java.io.*;
 
 public class AudioControl {
@@ -33,10 +27,11 @@ public class AudioControl {
     }
     // make audio file in different sampling rate
     public void setAudioEncoding(String filePath, String fileName) throws InterruptedException, UnsupportedAudioFileException, IOException {
-            File file = new File(filePath);
-            enc = new AudioEncoder(file,fileName);
-            enc.changeSampleRate();
+            //File file = new File(filePath);
+            enc = new AudioEncoder(filePath,fileName);
+            enc.bitRateConvert(64);
     }
+
 
     //send audio file(par: path of audio file)
     public void sendAudioFile(String filePath){

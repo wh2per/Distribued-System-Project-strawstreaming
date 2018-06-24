@@ -1,4 +1,6 @@
 import javafx.embed.swing.JFXPanel;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javazoom.jl.player.Player;
 
 import javax.swing.*;
@@ -17,6 +19,7 @@ public class PlayThread extends Thread {
             f.setSize(200,200);
             f.setVisible(true);
             //Thread.sleep(10);
+
             File file =new File("./Downloads/download"+".mp3");
             FileInputStream fis = new FileInputStream(file);
             BufferedInputStream bis = new BufferedInputStream(fis);
