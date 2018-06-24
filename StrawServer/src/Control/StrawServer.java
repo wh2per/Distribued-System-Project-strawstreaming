@@ -7,6 +7,7 @@ import java.net.*;
 
 public class StrawServer {
     final static int port = 9999;
+    static int id = 0;
 
     public static void main(String[] args){
         try {
@@ -14,7 +15,8 @@ public class StrawServer {
             System.out.println("server running....");
             while(true){
                 Socket socket = server.accept();
-                ServerThread st = new ServerThread(socket);
+                id++;
+                ServerThread st = new ServerThread(socket, id);
                 st.start();
             }
         } catch (Exception e) {
