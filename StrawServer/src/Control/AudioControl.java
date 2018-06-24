@@ -14,13 +14,15 @@ import java.io.*;
 
 public class AudioControl {
     // buffer Size
-    final static int BUFSIZE = 2048;
+    final static int BUFSIZE = 20480;
 
     // MARK: properties
     private OutputStream out;
     private InputStream in;
     private PrintWriter pw;
     private BufferedReader br;
+    private int start;
+    private int end;
 
     // MARK: other objects
     AudioEncoder enc;
@@ -33,9 +35,9 @@ public class AudioControl {
     }
     // make audio file in different sampling rate
     public void setAudioEncoding(String filePath, String fileName) throws InterruptedException, UnsupportedAudioFileException, IOException {
-            File file = new File(filePath);
-            enc = new AudioEncoder(file,fileName);
-            enc.changeSampleRate();
+        File file = new File(filePath);
+        enc = new AudioEncoder(file,fileName);
+        enc.changeSampleRate();
     }
 
     //send audio file(par: path of audio file)
@@ -47,16 +49,17 @@ public class AudioControl {
             // set buffer
             byte buffer[] = new byte[BUFSIZE];
 
-            long fileSize = file.length();
             int count;
             int i=0;
-            pw.print(String.valueOf(fileSize));
-            pw.flush();
+
             while ((count = fin.read(buffer)) != -1){
-                System.out.println("send"+i);
-                out.write(buffer, 0, count);
+                if(i>=start && i<=end) {
+                    System.out.println("send"+i);
+                    out.write(buffer, 0, count);
+                    out.flush();
+                }else if(i>end)
+                    break;
                 i++;
-                out.flush();
             }
 
             System.out.println("done");
@@ -65,6 +68,37 @@ public class AudioControl {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    public String getSQN(String filePath, int id){
+        long fileSize=0;
+        String msg = null;
+
+        File file = new File(filePath);
+        fileSize = file.length();
+
+        switch (id){
+            case 1:
+                start = 0;
+                end = (int)(fileSize/20480/3-1);
+                msg = start+","+end;
+                break;
+            case 2:
+                start = (int)(fileSize/20480/3);
+                end = (int)(fileSize/20480/3)+(int)(fileSize/20480/3-1);
+                msg = start+","+end;
+                break;
+            case 3:
+                start = (int)(fileSize/20480/3)+(int)(fileSize/20480/3);
+                end = (int)(fileSize/20480);
+                msg = start+","+end;
+                break;
+            default:
+                System.out.println("슬레이브 ID가 잘못되었습니다!");
+                break;
+        }
+
+
+        return msg;
     }
 }
