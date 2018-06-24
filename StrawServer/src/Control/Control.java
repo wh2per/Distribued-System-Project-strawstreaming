@@ -58,4 +58,3 @@ public class Control {
         return 0;
     }
 }
-
