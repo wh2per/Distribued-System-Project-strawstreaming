@@ -11,16 +11,18 @@ public class ServerThread extends Thread{
     private Socket sock;
     String fileName = "audio1";
     String filePath = "Database/OGaudios/"+fileName+".mp3";
+    private int id;
     //init thread & socket
-    public ServerThread(Socket sock){
+    public ServerThread(Socket sock, int id){
         this.sock = sock;
+        this.id = id;
     }
 
     public void run(){
         try{
             // Socket connection.
             InetAddress inetAddr = sock.getInetAddress();
-            System.out.println("NEW CLIENT : " + inetAddr.getHostAddress());
+            System.out.println("NEW SLAVE : " + inetAddr.getHostAddress()+", "+id);
             // In & out streams.
             OutputStream out = sock.getOutputStream();
             InputStream in = sock.getInputStream();
@@ -29,13 +31,10 @@ public class ServerThread extends Thread{
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             // Properties.
             String msg = null;
-            // Control objects
-            AudioControl ac;
 
-            // Set Audio Control
-            ac = new AudioControl(out,in,pw,br);
-            //ac.setAudioEncoding(filePath,fileName);
-            ac.sendAudioFile(filePath);
+            // Control objects
+            Control control = new Control(out,in,pw,br);
+            control.ServerToSlave(fileName, filePath, id);
 
             pw.close();
             br.close();
