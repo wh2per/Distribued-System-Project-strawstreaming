@@ -40,20 +40,10 @@ public class Control {
             endSQN = Integer.parseInt(line.substring(index+1));
             pw.println("ACK3");          // 서버로 ACK 전송
             pw.flush();
-
-            AudioDownloader ad = new AudioDownloader(out,in,pw,br, startSQN, endSQN);
-            ad.downloadAudioFile(filename+"/");
             line = br.readLine();
-
-            if(line.equals("2")){
-                System.out.println("done");
-            }
-            /*
-            if(line.equals("1")){       // 서버로 다운로드 요청 옴
-
-            }else{
-                System.out.println("다운로드 요청부터 전송하세요 ! ");
-            }*/
+            AudioDownloader ad = new AudioDownloader(out,in,pw,br, startSQN, endSQN);
+            ad.downloadAudioFile(filename+"/",line);
+            //ad.audioEncoding();
         } catch (IOException e) {
             e.printStackTrace();
         }

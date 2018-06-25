@@ -42,9 +42,11 @@ public class Control {
 
                     line = br.readLine();
                     if(line.equals("ACK3")){
-                        ad.sendAudioFile(filePath,msg);      //슬레이브로 음원을 전송
-                        pw.println("2");        // 슬레이브로 다운로드 종료 전송
+                        pw.println(Integer.toString(id));
                         pw.flush();
+                        ad.sendAudioFile(filePath,msg);      //슬레이브로 음원을 전송
+                        //pw.println(Integer.toString(id));        // 슬레이브로 종료 전송 & id for encoding
+                        //pw.flush();
                     }
                 }
             }else{

@@ -85,36 +85,14 @@ public class AudioControl {
 
         File file = new File(filePath);
         fileSize = file.length();
-
-        start = (int)((id)*(fileSize/BUFSIZE/max));
-        end = (int)((id+1)*(fileSize/BUFSIZE/max))-1;
+        start = 0;
+        end = (int)(fileSize/BUFSIZE);
+        //start = (int)((id)*(fileSize/BUFSIZE/max));
+        //end = (int)((id+1)*(fileSize/BUFSIZE/max))-1;
         if(id == max-1){
             end++;
         }
         msg = start+","+end;
-
-/*
-        switch (id){
-            case 1:
-                start = 0;
-                end = (int)(fileSize/20480/3-1);
-                msg = start+","+end;
-                break;
-            case 2:
-                start = (int)(fileSize/20480/3);
-                end = (int)(fileSize/20480/3)+(int)(fileSize/20480/3-1);
-                msg = start+","+end;
-                break;
-            case 3:
-                start = (int)(fileSize/20480/3)+(int)(fileSize/20480/3);
-                end = (int)(fileSize/20480);
-                msg = start+","+end;
-                break;
-            default:
-                System.out.println("슬레이브 ID가 잘못되었습니다!");
-                break;
-        }
-*/
 
         return msg;
     }

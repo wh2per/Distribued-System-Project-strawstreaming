@@ -1,4 +1,5 @@
 import java.io.*;
+import java.lang.reflect.Executable;
 
 public class AudioDownloader {
     // buffer Size
@@ -30,45 +31,42 @@ public class AudioDownloader {
         }
         return file;
     }
-    public void audioEncoding(int start, int end, String s, String d, int rate){
-        // audio Encoding
-        String qual ="h";
-        String source = s;
-        File sour;
-        File dest;
-        AudioEncoder ae;
-        switch (rate){
-            case 128:
-                qual = "m";
+    public int getBitRate(int id){
+        int rate = 192;
+        switch (id){
+            case 0:
+                rate = 192;
                 break;
-            case 64:
-                qual = "l";
+            case 1:
+                rate = 128;
+                break;
+            case 2:
+                rate = 64;
                 break;
             default:
-                qual = "h";
+                rate = 192;
                 break;
         }
-        for(int i=start; i<=end; i++){
-            source = source+i+".mp3";
-            sour = new File(source);
-            dest = new File(d+qual+i+".mp3");
-            ae = new AudioEncoder(sour,dest,rate);
-        }
+        return rate;
     }
-    public void downloadAudioFile(String dirName) {
+    public void audioEncoding(String dir, File file, int id){
+        int rate = getBitRate(id);
+        File encFile = new File(dir+"encoded"+Integer.toString(rate)+".mp3");
+        new AudioEncoder(file,encFile,rate);
+    }
+    public void downloadAudioFile(String dirName,String slaveID) {
         try {
+            String msg ="";
+            int id = 0;
             int fileIdx = 0;
             // set file & file stream
             File file = makeDir(dirName);
-            File mFile = makeDir(dirName+"m/");
-            File lFile = makeDir(dirName+"h/");
 
-            //File total = makeDir(dirName+"temp.mp3");
 
-            fileName = dirName+startSQN+".mp3";
+            //fileName = dirName+startSQN+".mp3";
+            fileName = dirName+"original.mp3";
             file = new File(fileName);      // 첫 번째 파일 생성
             FileOutputStream fos = new FileOutputStream(file);
-            //FileOutputStream fost = new FileOutputStream(total);
             // set buffer
             byte buffer[] = new byte[BUFSIZE];
 
@@ -79,26 +77,27 @@ public class AudioDownloader {
             for(i=startSQN; i<=endSQN; i++){
                 count = in.read(buffer);
                 fos.write(buffer);
-                //fost.write(buffer);
-                System.out.println(i+" "+endSQN);
+                //System.out.println(i+" "+endSQN);
+                /*
                 if(i<endSQN){
                     fileName = dirName+(i+1)+".mp3";
                     file = new File(fileName);
                     fos = new FileOutputStream(file);
-                }
+                }*/
             }
-            //fost.flush();
-            //fost.close();
             fos.flush();
             fos.close();
 
-            audioEncoding(startSQN,endSQN,dirName,dirName+"m/",128);
-            audioEncoding(startSQN,endSQN,dirName,dirName+"l/",64);
+            //get slave id from server
+            id = Integer.parseInt(slaveID);
+            audioEncoding(dirName,file,id);
 
             //System.out.println("done");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        }catch (Exception e){
             e.printStackTrace();
         }
     }
