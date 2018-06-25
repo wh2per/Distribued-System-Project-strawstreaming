@@ -14,18 +14,19 @@ public class AudioEncoder {
     // MARK: properties
     private File inFile;
     private File outFile;
-
-    public AudioEncoder(String filePath, String fileName){
-        this.inFile = new File(filePath);
-        this.outFile = new File("Database/2000Audios/"+fileName+".mp3");
+    private int kbps;
+    public AudioEncoder(File s, File d, int kbps){
+        this.inFile = s;
+        this.outFile = d;
+        this.bitRateConvert(kbps);
     }
 
     public void bitRateConvert(int kbps){
         // create a media reader
-        IMediaReader mediaReader = ToolFactory.makeReader(inFile.getPath());
+        IMediaReader mediaReader = ToolFactory.makeReader(this.inFile.getPath());
 
         // create a media writer
-        IMediaWriter mediaWriter = ToolFactory.makeWriter(outFile.getPath(), mediaReader);
+        IMediaWriter mediaWriter = ToolFactory.makeWriter(this.outFile.getPath(), mediaReader);
 
         // add a writer to the reader, to create the output file
         mediaReader.addListener(mediaWriter);

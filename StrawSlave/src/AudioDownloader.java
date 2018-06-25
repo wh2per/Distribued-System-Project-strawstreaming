@@ -12,6 +12,7 @@ public class AudioDownloader {
 
     private int startSQN;
     private int endSQN;
+    private String fileName;
 
     public AudioDownloader(OutputStream out, InputStream in, PrintWriter pw, BufferedReader br, int startSQN, int endSQN) {
         this.in = in;
@@ -22,41 +23,77 @@ public class AudioDownloader {
         this.startSQN = startSQN;
         this.endSQN = endSQN;
     }
-
+    public File makeDir(String dirName){
+        File file = new File(dirName);     // 파일명으로 디렉토리 생성
+        if(!file.exists()) {               // 디렉토리가 존재하지 않으면
+            file.mkdirs();
+        }
+        return file;
+    }
+    public void audioEncoding(int start, int end, String s, String d, int rate){
+        // audio Encoding
+        String qual ="h";
+        String source = s;
+        File sour;
+        File dest;
+        AudioEncoder ae;
+        switch (rate){
+            case 128:
+                qual = "m";
+                break;
+            case 64:
+                qual = "l";
+                break;
+            default:
+                qual = "h";
+                break;
+        }
+        for(int i=start; i<=end; i++){
+            source = source+i+".mp3";
+            sour = new File(source);
+            dest = new File(d+qual+i+".mp3");
+            ae = new AudioEncoder(sour,dest,rate);
+        }
+    }
     public void downloadAudioFile(String dirName) {
         try {
             int fileIdx = 0;
             // set file & file stream
-            File file = new File(dirName);     // 파일명으로 디렉토리 생성
-            if(!file.exists()) {               // 디렉토리가 존재하지 않으면
-                file.mkdirs();
-            }/*else{                             // 디렉토리가 존재하면
-                File[] files = file.listFiles();
-                for(File f : files){
-                    f.delete();                // 디렉토리 안에 파일들을 삭제
-                }
-            }*/
+            File file = makeDir(dirName);
+            File mFile = makeDir(dirName+"m/");
+            File lFile = makeDir(dirName+"h/");
 
-            file = new File(dirName+startSQN+".mp3");      // 첫 번째 파일 생성
+            //File total = makeDir(dirName+"temp.mp3");
+
+            fileName = dirName+startSQN+".mp3";
+            file = new File(fileName);      // 첫 번째 파일 생성
             FileOutputStream fos = new FileOutputStream(file);
-
+            //FileOutputStream fost = new FileOutputStream(total);
             // set buffer
             byte buffer[] = new byte[BUFSIZE];
 
             int count;
             int i = 0;
 
+            // download from server
             for(i=startSQN; i<=endSQN; i++){
                 count = in.read(buffer);
                 fos.write(buffer);
+                //fost.write(buffer);
                 System.out.println(i+" "+endSQN);
                 if(i<endSQN){
-                    file = new File(dirName+(i+1)+".mp3");
+                    fileName = dirName+(i+1)+".mp3";
+                    file = new File(fileName);
                     fos = new FileOutputStream(file);
                 }
             }
+            //fost.flush();
+            //fost.close();
             fos.flush();
             fos.close();
+
+            audioEncoding(startSQN,endSQN,dirName,dirName+"m/",128);
+            audioEncoding(startSQN,endSQN,dirName,dirName+"l/",64);
 
             //System.out.println("done");
         } catch (FileNotFoundException e) {
