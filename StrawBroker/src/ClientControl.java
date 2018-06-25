@@ -8,10 +8,14 @@ import java.io.PrintWriter;
  */
 public class ClientControl {
     // MARK: properties
-    private OutputStream out;
     private InputStream in;
-    private PrintWriter pw;
+    private OutputStream out;
     private BufferedReader br;
+    private PrintWriter pw;
+    private String msgIn = "";
+    private String msgOut = "";
+    private String fileName = "";
+    private String fileSize = "";
 
     public ClientControl (InputStream in, OutputStream out, BufferedReader br,PrintWriter pw){
         this.in = in;
@@ -19,17 +23,29 @@ public class ClientControl {
         this.br = br;
         this.pw = pw;
     }
+    public void sendACK(PrintWriter pw, String msg){
+        //send ACK
+        pw.println(msg);
+        pw.flush();
+    }
 
     public void selectMode(String mode, ServerControl sc){
-        String msg = null;
         try{
-            pw.print(msg);
-            pw.flush();
-            if(mode == "GET"){ // file send mode
-                if((msg = br.readLine())!=null){ // get file name
-                    pw.print(msg);
-                    pw.flush();
-                    sc.fileSender(msg, in, out);
+            sendACK(pw,mode);
+            if(mode.equals("GET")){ // file send mode
+                if((msgIn = br.readLine())!=null){ // get file name
+                    if(sc.isFileExist(msgIn)){
+                        fileName = msgIn;
+                        sendACK(pw,msgIn);
+                        fileSize = sc.getFileSize(fileName);
+                        sendACK(pw,fileSize); //send ack for filesize
+                        //get seqNum
+                        while((msgIn = br.readLine())!=null){
+                            sc.fileSender(fileName,fileSize,msgIn,out);
+                        }
+                    }else{
+                        sendACK(pw,"NAK");
+                    }
                 }
             }
         }catch (Exception e){

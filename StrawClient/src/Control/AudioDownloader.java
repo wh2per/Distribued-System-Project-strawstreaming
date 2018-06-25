@@ -1,8 +1,10 @@
+package Control;
+
 import java.io.*;
 
 public class AudioDownloader {
     // buffer Size
-    final static int BUFSIZE = 2048;
+    final static int BUFSIZE = 20480;
 
     // MARK: properties
     private OutputStream out;
@@ -16,29 +18,44 @@ public class AudioDownloader {
         this.pw = pw;
         this.br = br;
     }
-
-    public void downloadAudioFile(String filePath, String fileName){
+    public boolean sendMsg(BufferedReader br,PrintWriter pw, String msg){
+        //send msg
+        pw.println(msg);
+        pw.flush();
         try{
-            int fileIdx = 0;
+            String tempMsg = br.readLine();
+            if(msg.equals(tempMsg)){
+                return true;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public void downloadAudioFile(String filePath, String fileName){
+        int fileSize = 0;
+        try{
+            if(sendMsg(this.br,this.pw,"GET")){
+                if(sendMsg(this.br,this.pw,fileName)){
+                    String tempMsg = br.readLine();
+                    fileSize = Integer.parseInt(tempMsg);
+                }
+            }
             // set file & file stream
-            File file = new File(filePath+fileName+".mp3");
+            File file = new File(filePath+fileName);
             FileOutputStream fos = new FileOutputStream(file);
 
             // set buffer
             byte buffer[] = new byte[BUFSIZE];
-
-            long fileSize = file.length();
             int count;
-            int i=0;
-            do{
+
+            for(int i=0; i<fileSize; i++){
+                pw.println(i);
+                pw.flush();
+                //System.out.println(i+" "+fileSize);
                 count = in.read(buffer);
                 fos.write(buffer);
-                i++;
-                if(i==10){
-                    i=0;
-                    Thread.sleep(800);
-                }
-            }while(count>0);
+            }
 
             in.close();
             fos.flush();
@@ -48,8 +65,6 @@ public class AudioDownloader {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

@@ -8,18 +8,14 @@ public class ServerBrokerThread extends Thread{
     final static String servAddr = "127.0.0.1";
     // port# for slaves
     final static int[] slavePort = {6666,7777,8888};
+    final static int mainServPort = 2020;
 
-    // socket for 3 different slaves
-    private Socket[] slaveSock;
-
-    public ServerBrokerThread(Socket[] slaveSock){
-        this.slaveSock = slaveSock;
-    }
 
     public void run(){
         try{
-            for(int i = 0; i<slavePort.length; i++){
-                slaveSock[i] = new Socket(servAddr,slavePort[i]);
+            StrawBroker.servSocket = new Socket(servAddr,mainServPort);
+            for(int i = 0; i<=0/*slavePort.length*/; i++){
+                StrawBroker.slaveSock[i] = new Socket(servAddr,slavePort[i]);
             }
         }catch (Exception e){
             System.out.println(e);

@@ -9,20 +9,21 @@ import java.net.Socket;
 public class ServerThread extends Thread{
     // Socket property
     private Socket sock;
+
+    //MARK: property
     String fileName = "audio1";
     String filePath = "Database/OGaudios/"+fileName+".mp3";
     private int id;
+    private int max;
     //init thread & socket
-    public ServerThread(Socket sock, int id){
+    public ServerThread(Socket sock, int id,int max){
         this.sock = sock;
         this.id = id;
+        this.max = max;
     }
 
     public void run(){
         try{
-            // Socket connection.
-            InetAddress inetAddr = sock.getInetAddress();
-            System.out.println("NEW SLAVE : " + inetAddr.getHostAddress()+", "+id);
             // In & out streams.
             OutputStream out = sock.getOutputStream();
             InputStream in = sock.getInputStream();
@@ -34,7 +35,7 @@ public class ServerThread extends Thread{
 
             // Control objects
             Control control = new Control(out,in,pw,br);
-            control.ServerToSlave(fileName, filePath, id);
+            control.ServerToSlave(fileName, filePath, id, max);
 
             pw.close();
             br.close();

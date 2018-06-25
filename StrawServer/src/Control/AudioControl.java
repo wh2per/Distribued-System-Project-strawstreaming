@@ -15,7 +15,6 @@ import java.io.*;
 public class AudioControl {
     // buffer Size
     final static int BUFSIZE = 20480;
-
     // MARK: properties
     private OutputStream out;
     private InputStream in;
@@ -37,15 +36,24 @@ public class AudioControl {
     public void setAudioEncoding(String filePath, String fileName) throws InterruptedException, UnsupportedAudioFileException, IOException {
         File file = new File(filePath);
     }
-
+    public int getStartNum(String msg){
+        String[] temp = msg.split(",");
+        return Integer.parseInt(temp[0]);
+    }
+    public int getEndNum(String msg){
+        String[] temp = msg.split(",");
+        return Integer.parseInt(temp[1]);
+    }
     //send audio file(par: path of audio file)
-    public void sendAudioFile(String filePath){
+    public void sendAudioFile(String filePath,String seq){
         try{
             // set file & file stream
             File file = new File(filePath);
             FileInputStream fin = new FileInputStream(file);
             // set buffer
             byte buffer[] = new byte[BUFSIZE];
+            int start = getStartNum(seq);
+            int end = getEndNum(seq);
 
             int count;
             int i=0;
@@ -68,13 +76,24 @@ public class AudioControl {
         }
     }
 
-    public String getSQN(String filePath, int id){
-        long fileSize=0;
+    // get sequence # for audios
+    public String getSQN(String filePath, int id, int max){
+        long fileSize = 0;
         String msg = null;
+        int start = 0 ;
+        int end = 0;
 
         File file = new File(filePath);
         fileSize = file.length();
 
+        start = (int)((id)*(fileSize/BUFSIZE/max));
+        end = (int)((id+1)*(fileSize/BUFSIZE/max))-1;
+        if(id == max-1){
+            end++;
+        }
+        msg = start+","+end;
+
+/*
         switch (id){
             case 1:
                 start = 0;
@@ -95,7 +114,7 @@ public class AudioControl {
                 System.out.println("슬레이브 ID가 잘못되었습니다!");
                 break;
         }
-
+*/
 
         return msg;
     }

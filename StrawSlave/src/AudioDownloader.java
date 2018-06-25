@@ -45,21 +45,20 @@ public class AudioDownloader {
 
             int count;
             int i = 0;
-            do {
+
+            for(i=startSQN; i<=endSQN; i++){
                 count = in.read(buffer);
                 fos.write(buffer);
-                startSQN++;
-                System.out.println(startSQN);
-                file = new File(dirName+startSQN+".mp3");
-                fos = new FileOutputStream(file);
-            } while (count > 0);
-
-
-            in.close();
+                System.out.println(i+" "+endSQN);
+                if(i<endSQN){
+                    file = new File(dirName+(i+1)+".mp3");
+                    fos = new FileOutputStream(file);
+                }
+            }
             fos.flush();
             fos.close();
 
-            System.out.println("done");
+            //System.out.println("done");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

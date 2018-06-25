@@ -1,3 +1,5 @@
+package Control;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -8,7 +10,7 @@ public class ClientThread extends Thread {
         try{
 
             //socket
-            sock = new Socket("127.0.0.1",9999);
+            sock = new Socket("127.0.0.1",1234);
             // In & out streams.
             OutputStream out = sock.getOutputStream();
             InputStream in = sock.getInputStream();
@@ -18,7 +20,7 @@ public class ClientThread extends Thread {
             // Properties.
             String msg = null;
             AudioDownloader ad = new AudioDownloader(out,in,pw,br);
-            ad.downloadAudioFile("Downloads/","download");
+            ad.downloadAudioFile("Downloads/","audio1.mp3");
             pw.close();
             br.close();
             sock.close();

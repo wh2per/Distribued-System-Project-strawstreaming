@@ -16,17 +16,23 @@ public class SlaveThread extends Thread {
             PrintWriter pw = new PrintWriter(new OutputStreamWriter(out));
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             // Properties.
-            String msg = null;
+            String msg = "";
 
             Control control = new Control(out,in,pw,br);
-            control.ServerToSlave();
 
+            do{
+                msg = br.readLine();
+                if(msg.equals("1")){
+                    control.ServerToSlave();
+                    break;
+                }
+            }while(!msg.equals("EXIT"));
             pw.close();
             br.close();
             sock.close();
 
         } catch (Exception ex) {
-            System.out.println(ex);
+            ex.printStackTrace();
         }
     }
 
