@@ -60,7 +60,7 @@ public class AudioControl {
 
             while ((count = fin.read(buffer)) != -1){
                 if(i>=start && i<=end) {
-                    System.out.println("send"+i);
+                    System.out.println("send"+i+", "+count);
                     out.write(buffer, 0, count);
                     out.flush();
                 }else if(i>end)
@@ -89,7 +89,7 @@ public class AudioControl {
         end = (int)(fileSize/BUFSIZE);
         //start = (int)((id)*(fileSize/BUFSIZE/max));
         //end = (int)((id+1)*(fileSize/BUFSIZE/max))-1;
-        if(id == max-1){
+        if(fileSize%BUFSIZE!=0){
             end++;
         }
         msg = start+","+end;

@@ -78,7 +78,7 @@ public class BrockerControl extends Thread {
                     msgIn = br.readLine();
                     int idx = msgIn.indexOf(".");
                     dirName =  msgIn.substring(0,idx);
-                    dirName = dirName+"/";
+                    dirName = dirName+"/temp/";
                     //Send Ack
                     if(isFileExist(dirName)){ // file exist
                         this.sendACK(pw,msgIn);

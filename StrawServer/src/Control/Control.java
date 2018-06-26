@@ -42,9 +42,9 @@ public class Control {
 
                     line = br.readLine();
                     if(line.equals("ACK3")){
-                        pw.println(Integer.toString(id));
+                        pw.println(Integer.toString(id));       // ID전송 (이것으로 고,중,저 정해야함)
                         pw.flush();
-                        ad.sendAudioFile(filePath,msg);      //슬레이브로 음원을 전송
+                        ad.sendAudioFile(filePath,msg);         //슬레이브로 음원을 전송
                         //pw.println(Integer.toString(id));        // 슬레이브로 종료 전송 & id for encoding
                         //pw.flush();
                     }

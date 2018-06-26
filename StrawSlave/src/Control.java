@@ -40,7 +40,7 @@ public class Control {
             endSQN = Integer.parseInt(line.substring(index+1));
             pw.println("ACK3");          // 서버로 ACK 전송
             pw.flush();
-            line = br.readLine();
+            line = br.readLine();       // ID 받음
             AudioDownloader ad = new AudioDownloader(out,in,pw,br, startSQN, endSQN);
             ad.downloadAudioFile(filename+"/",line);
             //ad.audioEncoding();

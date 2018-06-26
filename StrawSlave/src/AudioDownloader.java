@@ -49,10 +49,34 @@ public class AudioDownloader {
         }
         return rate;
     }
-    public void audioEncoding(String dir, File file, int id){
+    public File audioEncoding(String dir, File file, int id){
         int rate = getBitRate(id);
         File encFile = new File(dir+"encoded"+Integer.toString(rate)+".mp3");
         new AudioEncoder(file,encFile,rate);
+        return encFile;
+    }
+    public void audioSpliting(File file, String dir, int maxSeq){
+        File temp;
+        FileOutputStream fos;
+        FileInputStream fin;
+        byte buffer[];
+        int fileSize = 0, bufsize = 0;
+        try{
+            fileSize = (int)file.length();
+            bufsize = fileSize/(maxSeq-1);
+            buffer = new byte[bufsize];
+            fin = new FileInputStream(file);
+            for(int i=0; i<maxSeq; i++){
+                fin.read(buffer);
+                temp = new File(dir+i+".mp3");
+                fos = new FileOutputStream(temp);
+                fos.write(buffer);
+                fos.flush();
+                fos.close();
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
     public void downloadAudioFile(String dirName,String slaveID) {
         try {
@@ -61,7 +85,7 @@ public class AudioDownloader {
             int fileIdx = 0;
             // set file & file stream
             File file = makeDir(dirName);
-
+            File encFile = makeDir(dirName+"temp/");
 
             //fileName = dirName+startSQN+".mp3";
             fileName = dirName+"original.mp3";
@@ -76,8 +100,10 @@ public class AudioDownloader {
             // download from server
             for(i=startSQN; i<=endSQN; i++){
                 count = in.read(buffer);
-                fos.write(buffer);
-                //System.out.println(i+" "+endSQN);
+                if(count >-1){
+                    fos.write(buffer,0,count);
+                }
+                //System.out.println(slaveID+" "+i+" "+count);
                 /*
                 if(i<endSQN){
                     fileName = dirName+(i+1)+".mp3";
@@ -87,10 +113,11 @@ public class AudioDownloader {
             }
             fos.flush();
             fos.close();
-
+            Thread.sleep(50);
             //get slave id from server
             id = Integer.parseInt(slaveID);
-            audioEncoding(dirName,file,id);
+            encFile = audioEncoding(dirName,file,id);
+            audioSpliting(encFile,dirName+"temp/",endSQN);
 
             //System.out.println("done");
         } catch (FileNotFoundException e) {

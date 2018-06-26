@@ -34,6 +34,8 @@ public class AudioDownloader {
     }
     public void downloadAudioFile(String filePath, String fileName){
         int fileSize = 0;
+
+        String msg = "";
         try{
             if(sendMsg(this.br,this.pw,"GET")){
                 if(sendMsg(this.br,this.pw,fileName)){
@@ -46,19 +48,21 @@ public class AudioDownloader {
             FileOutputStream fos = new FileOutputStream(file);
 
             // set buffer
-            byte buffer[] = new byte[BUFSIZE];
+            byte buffer[]= new byte[BUFSIZE];;
             int count;
 
             for(int i=0; i<fileSize; i++){
-                pw.println(i);
+
+                msg = StrawClient.bandwidth+","+i;
+                pw.println(msg);
                 pw.flush();
                 //System.out.println(i+" "+fileSize);
                 count = in.read(buffer);
-                fos.write(buffer);
+                fos.write(buffer,0,count);
+                fos.flush();
             }
 
             in.close();
-            fos.flush();
             fos.close();
 
             System.out.println("done");

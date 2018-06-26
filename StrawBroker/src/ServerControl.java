@@ -1,4 +1,5 @@
 import java.io.*;
+import java.lang.invoke.SwitchPoint;
 import java.net.Socket;
 
 /**
@@ -58,18 +59,23 @@ public class ServerControl {
     }
     /*****************/
     // find socket by seq num
-    public int findSlaveSock(String seqNum, String fileSize){
-        int maxSlave = 3;
-        int seq = Integer.parseInt(seqNum);
-        int size = Integer.parseInt(fileSize);
-        //System.out.println(size/maxSlave);
-        if(seq<=(size/maxSlave)){
-            return 0;
-        }else if(seq<=(size/maxSlave)*2){
-            return 0;
-        }else{
-            return 0;
+    public int findSlaveSock(String seqNum){
+        int slave =0;
+        switch (seqNum) {
+            case "h":
+                slave = 0;
+                break;
+            case "m":
+                slave = 1;
+                break;
+            case "l":
+                slave = 2;
+                break;
+            default:
+                slave = 0;
+                break;
         }
+        return slave;
     }
     /******************/
     public String getFileSize(String fileName){
@@ -97,15 +103,24 @@ public class ServerControl {
         }
         return false;
     }
-    public void fileSender(String fileName, String fileSize, String seqNum, OutputStream clntout){
+    public String getQuality(String msg){
+        String[] temp = msg.split(",");
+        return temp[0];
+    }
+    public String getSeqtNum(String msg){
+        String[] temp = msg.split(",");
+        return temp[1];
+    }
+    public void fileSender(String fileName, String fileSize, String msg, OutputStream clntout){
         try{
             byte buffer[] = new byte[BUFSIZE];
             int count;
-            int sockID = findSlaveSock(seqNum,fileSize);
+
+            int sockID = findSlaveSock(getQuality(msg));
             msgOut = "GET";
             if(sendMsg(br[sockID],pw[sockID],msgOut)){
                 if(sendMsg(br[sockID],pw[sockID],fileName)){
-                    pw[sockID].println(seqNum);
+                    pw[sockID].println(getSeqtNum(msg));
                     pw[sockID].flush();
                     count = in[sockID].read(buffer);
                     clntout.write(buffer,0,count);
