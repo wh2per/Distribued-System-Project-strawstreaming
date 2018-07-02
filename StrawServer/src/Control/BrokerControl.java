@@ -54,13 +54,13 @@ public class BrokerControl extends Thread{
     }
     public void run(){
         try{
-            while ((msgIn = br.readLine()) != null) {
-                sendACK(pw,msgIn);
-                msgIn = br.readLine();
-                if(isFileExist(msgIn)){
-                    sendACK(pw,msgIn);
-                    msgIn = br.readLine();
-                    sendACK(pw,getFileSize(msgIn));
+            while ((msgIn = br.readLine()) != null) {           //브로커에게 "NAME"이라고 왔는지 검사
+                sendACK(pw,msgIn);                              // "NAME"이라고 받았다고 전송
+                msgIn = br.readLine();                          // 브로커에게 파일이름 기다림
+                if(isFileExist(msgIn)){                         // 파일이 존재하면
+                    sendACK(pw,msgIn);                          // 브로커에게 파일이름을 받았다고 전송
+                    msgIn = br.readLine();                      // 파일이름 받으면
+                    sendACK(pw,getFileSize(msgIn));             // ACK으로 브로커에게 파일 사이즈를 전송
                 }else{
                     sendACK(pw,"NAK");
                 }

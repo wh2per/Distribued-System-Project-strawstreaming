@@ -16,9 +16,6 @@ public class ClientBrokerThread extends Thread{
 
     public void run(){
         try{
-            // Socket connection.
-            InetAddress inetAddr = sock.getInetAddress();
-            System.out.println("NEW CLIENT : " + inetAddr.getHostAddress());
             // In & out streams.
             OutputStream out = sock.getOutputStream();
             InputStream in = sock.getInputStream();

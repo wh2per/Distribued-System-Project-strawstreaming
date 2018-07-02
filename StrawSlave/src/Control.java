@@ -34,14 +34,13 @@ public class Control {
             pw.println("ACK2");          // 서버로 ACK 전송
             pw.flush();
 
-            line = br.readLine();       // 서버로 부터 start, end 시퀀스 넘버를 받기  ex) 0,10
-            int index = line.indexOf(",");
-            startSQN = Integer.parseInt(line.substring(0,index));
-            endSQN = Integer.parseInt(line.substring(index+1));
+            line = br.readLine();       // 서버로 부터 end 시퀀스 넘버를 받기  ex) 10
+
+            endSQN = Integer.parseInt(line);
             pw.println("ACK3");          // 서버로 ACK 전송
             pw.flush();
             line = br.readLine();       // ID 받음
-            AudioDownloader ad = new AudioDownloader(out,in,pw,br, startSQN, endSQN);
+            AudioDownloader ad = new AudioDownloader(out,in,pw,br,endSQN);
             ad.downloadAudioFile(filename+"/",line);
             //ad.audioEncoding();
         } catch (IOException e) {

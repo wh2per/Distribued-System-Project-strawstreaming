@@ -14,7 +14,7 @@ public class PlayThread extends Thread {
     public void run(){
         try{
 
-            File file =new File("./Downloads/audio1"+".mp3");
+            File file =new File("./Downloads/audio1.mp3");
             FileInputStream fis = new FileInputStream(file);
             BufferedInputStream bis = new BufferedInputStream(fis);
             Player player = new Player(bis);

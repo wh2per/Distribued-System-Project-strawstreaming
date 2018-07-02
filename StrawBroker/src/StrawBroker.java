@@ -21,6 +21,10 @@ public class StrawBroker {
             System.out.println("Broker running....");
             while(true){
                 Socket socket = server.accept();
+                // Socket connection.
+                InetAddress inetAddr = socket.getInetAddress();
+                System.out.println("NEW CLIENT : " + inetAddr.getHostAddress());
+
                 ServerControl sc = new ServerControl(servSocket,slaveSock);
                 //Thread for clients
                 ClientBrokerThread cbt = new ClientBrokerThread(socket, sc);

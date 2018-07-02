@@ -38,7 +38,7 @@ public class ServerControl {
             this.br = new BufferedReader[slaveSock.length];
             this.pw = new PrintWriter[slaveSock.length];
 
-            for(int i=0; i<=0/*slaveSock.length*/; i++){
+            for(int i=0; i<slaveSock.length; i++){
                 this.slaveSock[i] = slaveSock[i];
                 //Streams and reader writer
                 this.in[i] = this.slaveSock[i].getInputStream();
@@ -51,8 +51,8 @@ public class ServerControl {
         }
     }
     public boolean isFileExist(String fileName){
-        sendMsg(this.servBr,this.servPw,"NAME");
-        if(sendMsg(this.servBr,this.servPw,fileName)){
+        sendMsg(this.servBr,this.servPw,"NAME");        //서버에게 NAME이라고 전송하고 ACK을 받기
+        if(sendMsg(this.servBr,this.servPw,fileName)){          //파일이름을 서게 보내 있으면 true
             return true;
         }
         return false;
@@ -80,21 +80,23 @@ public class ServerControl {
     /******************/
     public String getFileSize(String fileName){
         String fileSize ="";
-        this.servPw.println(fileName);
+        this.servPw.println(fileName);      // 서버에게 파일이름 전송
         this.servPw.flush();
         try{
-            fileSize = this.servBr.readLine();
+            fileSize = this.servBr.readLine();      // 서버가 파일크기를 주기를 기다림
         }catch (IOException e){
             e.printStackTrace();
         }
-        return fileSize;
+        return fileSize;                // 파일크기 리턴
     }
     public boolean sendMsg(BufferedReader br,PrintWriter pw, String msg){
         //send msg
+       // System.out.println(msg+"라 보내고 ");
         pw.println(msg);
         pw.flush();
         try{
             String tempMsg = br.readLine();
+          //  System.out.println(tempMsg + "라고 ACK옴 ");
             if(msg.equals(tempMsg)){
                 return true;
             }
@@ -116,14 +118,15 @@ public class ServerControl {
             byte buffer[] = new byte[BUFSIZE];
             int count;
 
-            int sockID = findSlaveSock(getQuality(msg));
+            int sockID = findSlaveSock(getQuality(msg));            // msg = (l,0) 어느 슬레이브 소켓을 통신할지 결정
+
             msgOut = "GET";
-            if(sendMsg(br[sockID],pw[sockID],msgOut)){
-                if(sendMsg(br[sockID],pw[sockID],fileName)){
-                    pw[sockID].println(getSeqtNum(msg));
+            if(sendMsg(br[sockID],pw[sockID],msgOut)){              // 해당 슬레이브에게 "GET"을 전송하고 ACK를 기다림
+                if(sendMsg(br[sockID],pw[sockID],fileName)){        // 해당 슬레이브에게 파일 이름을 전송하고 ACK를 기다림
+                    pw[sockID].println(getSeqtNum(msg));            // 해당 슬레이브에게 시퀀스 넘버를 전송
                     pw[sockID].flush();
-                    count = in[sockID].read(buffer);
-                    clntout.write(buffer,0,count);
+                    count = in[sockID].read(buffer);                // 해당 슬레이브가 준 파일을 버퍼에 읽기
+                    clntout.write(buffer,0,count);              // 클라이언트 out에 읽은 버퍼의 데이터를 쓰기
                     clntout.flush();
                 }
             }

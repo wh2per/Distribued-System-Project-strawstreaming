@@ -8,7 +8,7 @@ public class SlaveThread extends Thread {
         try{
 
             //socket
-            sock = new Socket("127.0.0.1",9999);
+            sock = new Socket("192.168.56.1",9999);
             // In & out streams.
             OutputStream out = sock.getOutputStream();
             InputStream in = sock.getInputStream();

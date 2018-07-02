@@ -17,7 +17,7 @@ public class BkrToSlvThread extends Thread{
             // wait for broker connection
             while(true){
                 Socket socket = server.accept();
-                System.out.println("connet broker");
+                System.out.println("connect broker");
                 BrockerControl bc = new BrockerControl(socket);
                 bc.start();
             }

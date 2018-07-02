@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="StrawSlave:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/StrawSlave_jar</output-path>
+    <root id="archive" name="StrawSlave.jar">
+      <element id="module-output" name="StrawSlave" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/xuggle-xuggler-5.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/slf4j-api-1.7.25.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/slf4j-simple-1.7.25.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

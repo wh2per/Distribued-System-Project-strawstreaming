@@ -11,17 +11,15 @@ public class AudioDownloader {
     private PrintWriter pw;
     private BufferedReader br;
 
-    private int startSQN;
     private int endSQN;
     private String fileName;
 
-    public AudioDownloader(OutputStream out, InputStream in, PrintWriter pw, BufferedReader br, int startSQN, int endSQN) {
+    public AudioDownloader(OutputStream out, InputStream in, PrintWriter pw, BufferedReader br, int endSQN) {
         this.in = in;
         this.out = out;
         this.pw = pw;
         this.br = br;
 
-        this.startSQN = startSQN;
         this.endSQN = endSQN;
     }
     public File makeDir(String dirName){
@@ -97,23 +95,17 @@ public class AudioDownloader {
             int count;
             int i = 0;
 
-            // download from server
-            for(i=startSQN; i<=endSQN; i++){
-                count = in.read(buffer);
-                if(count >-1){
-                    fos.write(buffer,0,count);
-                }
-                //System.out.println(slaveID+" "+i+" "+count);
-                /*
-                if(i<endSQN){
-                    fileName = dirName+(i+1)+".mp3";
-                    file = new File(fileName);
-                    fos = new FileOutputStream(file);
-                }*/
+            while ((count = in.read(buffer)) != -1){
+                //if(i>endSQN)
+                  //  break;
+                fos.write(buffer,0,count);
+                buffer = new byte[BUFSIZE];
+                System.out.println(i+" "+count);
+                i++;
             }
             fos.flush();
             fos.close();
-            Thread.sleep(50);
+            //Thread.sleep(50);
             //get slave id from server
             id = Integer.parseInt(slaveID);
             encFile = audioEncoding(dirName,file,id);

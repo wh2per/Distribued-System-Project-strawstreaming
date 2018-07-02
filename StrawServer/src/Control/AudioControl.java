@@ -45,27 +45,26 @@ public class AudioControl {
         return Integer.parseInt(temp[1]);
     }
     //send audio file(par: path of audio file)
-    public void sendAudioFile(String filePath,String seq){
+    public void sendAudioFile(String filePath,String seq) throws InterruptedException {
         try{
             // set file & file stream
             File file = new File(filePath);
             FileInputStream fin = new FileInputStream(file);
             // set buffer
             byte buffer[] = new byte[BUFSIZE];
-            int start = getStartNum(seq);
-            int end = getEndNum(seq);
+            int end = Integer.parseInt(seq);
 
             int count;
             int i=0;
 
             while ((count = fin.read(buffer)) != -1){
-                if(i>=start && i<=end) {
-                    System.out.println("send"+i+", "+count);
-                    out.write(buffer, 0, count);
-                    out.flush();
-                }else if(i>end)
-                    break;
+                System.out.println("send"+i+", "+count);
+                out.write(buffer, 0, count);
+                out.flush();
+                //Thread.sleep(100);
                 i++;
+                if(i>end)
+                    break;
             }
 
             System.out.println("done");
@@ -80,19 +79,15 @@ public class AudioControl {
     public String getSQN(String filePath, int id, int max){
         long fileSize = 0;
         String msg = null;
-        int start = 0 ;
         int end = 0;
 
         File file = new File(filePath);
         fileSize = file.length();
-        start = 0;
         end = (int)(fileSize/BUFSIZE);
-        //start = (int)((id)*(fileSize/BUFSIZE/max));
-        //end = (int)((id+1)*(fileSize/BUFSIZE/max))-1;
         if(fileSize%BUFSIZE!=0){
             end++;
         }
-        msg = start+","+end;
+        msg = Integer.toString(end);
 
         return msg;
     }
