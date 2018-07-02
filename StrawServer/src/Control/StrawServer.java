@@ -13,11 +13,15 @@ public class StrawServer {
 
     // MARK: Property
     final static int port = 9999;
+<<<<<<< HEAD
     final static int broPort = 2020;
     public static int id = 0;
     public static String cmd = "";
     public static List <Socket> sock = new ArrayList<Socket>();
     public static List <Socket> broSock = new ArrayList<Socket>();
+=======
+    static int id = 0;
+>>>>>>> 7104a1b073812325b4b4443848cec5fa1f94124b
 
     public static void main(String[] args){
         try {
@@ -39,6 +43,7 @@ public class StrawServer {
             System.out.println("server running....");
 
             while(true){
+<<<<<<< HEAD
                 // Refresh time & wait for IO
                 Thread.sleep(30);
                 if(cmd.equals("UP")){
@@ -52,6 +57,12 @@ public class StrawServer {
                     id=0;
                     sock.clear();
                 }
+=======
+                Socket socket = server.accept();
+                id++;
+                ServerThread st = new ServerThread(socket, id);
+                st.start();
+>>>>>>> 7104a1b073812325b4b4443848cec5fa1f94124b
             }
         } catch (Exception e) {
             e.printStackTrace();

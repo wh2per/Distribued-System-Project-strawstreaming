@@ -1,5 +1,8 @@
+<<<<<<< HEAD:StrawClient/src/Control/ClientThread.java
 package Control;
 
+=======
+>>>>>>> 7104a1b073812325b4b4443848cec5fa1f94124b:StrawClient/src/ClientThread.java
 import java.io.*;
 import java.net.Socket;
 

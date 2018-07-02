@@ -14,16 +14,29 @@ public class ServerThread extends Thread{
     String fileName = "audio1";
     String filePath = "Database/OGaudios/"+fileName+".mp3";
     private int id;
+<<<<<<< HEAD
     private int max;
     //init thread & socket
     public ServerThread(Socket sock, int id,int max){
         this.sock = sock;
         this.id = id;
         this.max = max;
+=======
+    //init thread & socket
+    public ServerThread(Socket sock, int id){
+        this.sock = sock;
+        this.id = id;
+>>>>>>> 7104a1b073812325b4b4443848cec5fa1f94124b
     }
 
     public void run(){
         try{
+<<<<<<< HEAD
+=======
+            // Socket connection.
+            InetAddress inetAddr = sock.getInetAddress();
+            System.out.println("NEW SLAVE : " + inetAddr.getHostAddress()+", "+id);
+>>>>>>> 7104a1b073812325b4b4443848cec5fa1f94124b
             // In & out streams.
             OutputStream out = sock.getOutputStream();
             InputStream in = sock.getInputStream();
@@ -35,7 +48,11 @@ public class ServerThread extends Thread{
 
             // Control objects
             Control control = new Control(out,in,pw,br);
+<<<<<<< HEAD
             control.ServerToSlave(fileName, filePath, id, max);
+=======
+            control.ServerToSlave(fileName, filePath, id);
+>>>>>>> 7104a1b073812325b4b4443848cec5fa1f94124b
 
             pw.close();
             br.close();
