@@ -39,11 +39,11 @@
 + ### Process
   * 인코딩 단계
    <img src="pics/1.PNG" width="400" height="250"> 
-   <img src="pics/2.PNG" width="400" height="250">
-  <br>* 저장 단계
+   <img src="pics/2.PNG" width="400" height="250"><br>
+  * 저장 단계
    <img src="pics/3.PNG" width="400" height="250">
-   <img src="pics/4.PNG" width="400" height="250">
-  <br>* 요청 단계
+   <img src="pics/4.PNG" width="400" height="250"><br>
+  * 요청 단계
    <img src="pics/5.PNG" width="400" height="250">
    <img src="pics/6.PNG" width="400" height="250">
 + ### Design
